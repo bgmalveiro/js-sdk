@@ -1,6 +1,6 @@
 {
     "name": "mapify-sdk",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "description": "Mapify javascript SDK",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
