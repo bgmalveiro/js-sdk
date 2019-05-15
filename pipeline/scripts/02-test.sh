@@ -8,6 +8,6 @@ script_dir=$(dirname "$(pwd)/$0")
 
 pushd "$script_dir" > /dev/null
 
-docker run -it "js-sdk:$1" sh -c "yarn test"
+docker run "js-sdk:$1" sh -c "yarn test"
 
 popd > /dev/null
