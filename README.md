@@ -6,7 +6,7 @@ The Mapify JS SDK library is a wrapper for the Mapify APIs, such as the Authoriz
 
 ## Mapify Platform
 
-[Mapify](https://www.mapify.ai/) is a Location Intelligence Platform to prototype and develop large scalable enterprise solutions. It aggregates data from IOT sensing devices, modern and legacy information systems, enriching its value through location intelligence and machine learning layers to assist human decision on every imaginable use case while allowing virtually infinite platform extensibility.
+[Mapify](https://www.mapify.ai/) is a Location Intelligence Platform to prthisototype and develop large scalable enterprise solutions. It aggregates data from IOT sensing devices, modern and legacy information systems, enriching its value through location intelligence and machine learning layers to assist human decision on every imaginable use case while allowing virtually infinite platform extensibility.
 
 * [Website](https://www.mapify.ai/)
 * [Privacy Policy](https://www.mapify.ai/privacy/)
@@ -21,12 +21,12 @@ The Mapify JS SDK library is a wrapper for the Mapify APIs, such as the Authoriz
 
 Via [npm](https://www.npmjs.com/)
 ```bash
-npm install mapify/sdk
+npm install @mapify/sdk
 ```
 
 Via [yarn](https://yarnpkg.com/).
 ```bash
-yarn add mapify/sdk
+yarn add @mapify/sdk
 ```
 
 ## Basic usage examples
@@ -34,7 +34,7 @@ yarn add mapify/sdk
 ### Instantiate Authentication Client
 
 ```typescript
-const { AuthenticationClient } = require(`mapify/sdk`)
+const { AuthenticationClient } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient({
     publicKey: "/path/to/key.pub"
 })
@@ -44,29 +44,28 @@ const authenticationClient = new AuthenticationClient({
 
 **Note:** Before you sign an Api Key, you must create one on [Mapify Console](https://console.mapify.ai/)
 
-```typescript
-const { AuthenticationClient, Token, Authorization } = require(`mapify/sdk`)
+```js
+const { AuthenticationClient, Token } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
 
 try{
-    const token: Authorization = await authenticationClient.sign('apikey')
+    authenticationClient.sign('apikey').then( authorization => {
+       // Authentication token
+        authorization.authenticationToken
+        // Refresh token
+        authorization.refreshToken
+        // Authentication token expire date (UTC in seconds)
+        authorization.expires
+        
+        // Decoded payload
+        tokenPayload = authenticationClient.decode(authorization.authenticationToken)
+        tokenPayload.apis //the apis
+        tokenPayload.payload //the custom payload
 
-    // Authentication token
-    token.authenticationToken
-    // Refresh token
-    token.refreshToken
-    // Authentication token expire date (UTC in seconds)
-    token.expires
-
-    // Decoded payload
-    tokenPayload = authenticationClient.decode(token.authenticationToken)
-    tokenPayload.apis //the apis
-    tokenPayload.payload //the custom payload
-
-    // List of Claims
-    const decodedToken = new Token(tokenPayload)
-    claims = token.getClaimsByApi('api')
-
+        // List of Claims
+        const decodedToken = new Token(tokenPayload)
+        claims = token.getClaimsByApi('api')
+    })
 }catch(e){
     //there is a problem with the Sign.
 }
@@ -74,16 +73,16 @@ try{
 
 ### Sign with a API key and a custom payload
 
-```typescript
-const { AuthenticationClient } = require(`mapify/sdk`)
+```js
+const { AuthenticationClient } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
 const token = await authenticationClient.sign('apikey', customPayload)
 ```
 
 ### Sign with a API key and a Handler
 
-```typescript
-const { Handler, AuthenticationClient } = require(`mapify/sdk`)
+```js
+const { Handler, AuthenticationClient } = require(`@mapify/sdk`)
 
 class AuthenticationHandler implements Handler {
     construct(private readonly username, private readonly password) { }
@@ -97,11 +96,10 @@ class AuthenticationHandler implements Handler {
 }
 
 const authenticationClient = new AuthenticationClient()
-
 authenticationClient.withHandler(new AuthenticationHandler(`user`, `password`))
 
 try{
-    const token = await authenticationClient.sign('apikey')
+    authenticationClient.sign('apikey').then( authorization => { })
 }catch(e){
     //there is a problem with the Sign.
 }
@@ -109,27 +107,35 @@ try{
 
 ### Verify token
 
-```typescript
-const { Handler, AuthenticationClient } = require(`mapify/sdk`)
+```js
+const fs = require('fs')
+const { Handler, AuthenticationClient } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient({
-    publicKey: "/path/to/key.pub"
+    publicKey: fs.readFileSync(`${__dirname}/key.pub`, { encoding: 'utf8' })
 })
 
-const isValid = authenticationClient.verify(`token`)
+try{
+    const isValid = authenticationClient.verify(`token`)
+}catch(e){
+    //the reason
+}
 ```
 
 ##### OR
 
-```typescript
-const { AuthenticationClient } = require(`mapify/sdk`)
-const isValid = AuthenticationClient.verify(`token`, "/path/to/key.pub")
+```js
+const fs = require('fs')
+const { AuthenticationClient } = require(`@mapify/sdk`)
+const isValid = AuthenticationClient.verify(`token`, fs.readFileSync(`${__dirname}/key.pub`, { encoding: 'utf8' }))
 ```
 
 ### Refresh Token
 
-```typescript
+```js
+const { AuthenticationClient } = require(`@mapify/sdk`)
 try{
-    const refreshAuthorization = AuthenticationClient.refresh(authorization.refreshToken)
+    const authenticationClient = new AuthenticationClient()
+    authenticationClient.refresh(authorization.refreshToken).then( authorization => { })
 }catch(e){
     //there is a problem with the Sign.
 }
