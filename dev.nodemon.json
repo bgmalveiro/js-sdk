@@ -1,0 +1,10 @@
+{
+  "ignore": [
+    "dist"
+  ],
+  "watch": [
+    "src"
+  ],
+  "ext": "ts",
+  "exec": "node -r ts-node/register --inspect=3001 src/index.ts"
+}

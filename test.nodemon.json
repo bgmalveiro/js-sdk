@@ -1,0 +1,10 @@
+{
+    "ignore": [
+      "dist"
+    ],
+    "watch": [
+      "src", "test"
+    ],
+    "ext": "ts",
+    "exec": "yarn build && node --inspect-brk=3002 --inspect-brk node_modules/.bin/jest --runInBand --coverage false"
+  }

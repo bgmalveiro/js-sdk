@@ -1,25 +1,26 @@
 {
-    "name": "mapify-sdk",
-    "version": "0.0.1",
+    "name": "@mapify/sdk",
     "description": "Mapify javascript SDK",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "index.js",
+    "types": "index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/mapifyplatform/js-sdk"
     },
     "files": [
-        "dist/src"
+        "src",
+        "index.*",
+        "*.md"
     ],
     "author": "Mapify",
     "license": "Apache-2.0",
     "scripts": {
-        "clean": "yarn clean:build; rm -rf node_modules; rm -rf ./src/**/*.js*; rm -rf ./test/**/*.js*",
-        "clean:build": "rm -rf dist",
+        "clean": "yarn clean:build; rm -rf node_modules",
+        "clean:build": "rm -rf dist; rm -rf ./src/**/*.js*; rm -rf ./test/**/*.js*",
         "build": "yarn clean:build; yarn lint && tsc",
         "lint": "tslint --project tsconfig.json ./src/**/*.ts ./test/**/*.ts",
         "dev": "nodemon --config dev.nodemon.json",
-        "test": "jest",
+        "test": "yarn clean:build; jest",
         "docker:test": "docker build .",
         "test:debug": "NODE_ENV=test nodemon --config test.nodemon.json"
     },
@@ -31,7 +32,7 @@
     "dependencies": {
         "axios": "^0.18.0",
         "jsonwebtoken": "^8.5.1",
-        "nock": "^10.0.6"
+        "tslib": "^1.9.3"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
@@ -42,8 +43,8 @@
         "ts-jest": "^24.0.2",
         "ts-lint": "^4.5.1",
         "ts-node": "^8.1.0",
-        "tslib": "^1.9.3",
         "typescript": "^3.4.5",
+        "nock": "^10.0.6",
         "typescript-tslint-plugin": "^0.3.1"
     }
 }
