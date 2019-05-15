@@ -21,12 +21,12 @@ git push origin "$version"
 
 echo "Tag $version pushed\n\n"
 
-docker run "js-sdk:$1" sh -c \
+docker run "js-sdk:$1" --tty sh -c \
 "yarn build && 
 cp package.json *.md dist && 
 cp -r dist /deploy &&
 cd /deploy &&
-{ echo \"$npm_username\"; sleep 1; echo \"$npm_email\"; } | yarn login --non-interactive &&
-echo '$npm_password' | yarn publish --non-interactive --access public --new-version \"$1\""
+{ echo \"$npm_username\"; sleep 1; echo \"$npm_email\"; } | yarn login &&
+echo '$npm_password' | yarn publish --access public --new-version \"$1\""
 
 popd > /dev/null
