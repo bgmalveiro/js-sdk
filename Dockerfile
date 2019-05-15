@@ -7,4 +7,4 @@ RUN apk add --update \
 COPY . /sdk
 WORKDIR /sdk
 
-RUN yarn install
+RUN yarn install && yarn build
