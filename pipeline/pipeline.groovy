@@ -33,7 +33,7 @@ pipeline {
                     withCredentials([
                         usernamePassword(credentialsId: 'sdk-js-npm-user', usernameVariable: 'NPM_USER', passwordVariable: 'NPM_PASSWORD')
                     ]) {
-                        def { NPM_USERNAME, NPM_EMAIL } = NPM_USER.tokenize('|')
+                        def ( NPM_USERNAME, NPM_EMAIL ) = NPM_USER.tokenize('|')
                         sh "pipeline/scripts/03-publish.sh ${VERSION} '${NPM_USERNAME}' '${NPM_EMAIL}' '${NPM_PASSWORD}'"
                     }
                 }
