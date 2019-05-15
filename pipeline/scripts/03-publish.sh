@@ -21,7 +21,7 @@ git push origin "$version"
 
 echo "Tag $version pushed\n\n"
 
-docker run "js-sdk:$1" --tty sh -c \
+docker run --tty "js-sdk:$1" sh -c \
 "yarn build && 
 cp package.json *.md dist && 
 cp -r dist /deploy &&
