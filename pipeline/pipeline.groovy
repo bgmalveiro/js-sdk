@@ -6,7 +6,6 @@ pipeline {
     }
     environment {
         VERSION = "0.0.${BUILD_NUMBER}"
-        NPM_EMAIL = "mario.sobral@mapify.ai"
     }
     stages {
         stage('Setup') {
