@@ -48,27 +48,25 @@ const authenticationClient = new AuthenticationClient({
 const { AuthenticationClient, Token } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
 
-try{
-    authenticationClient.sign('apikey').then( authorization => {
-       // Authentication token
-        authorization.authenticationToken
-        // Refresh token
-        authorization.refreshToken
-        // Authentication token expire date (UTC in seconds)
-        authorization.expires
-        
-        // Decoded payload
-        tokenPayload = authenticationClient.decode(authorization.authenticationToken)
-        tokenPayload.apis //the apis
-        tokenPayload.payload //the custom payload
+authenticationClient.sign('apikey').then( authorization => {
+    // Authentication token
+    authorization.authenticationToken
+    // Refresh token
+    authorization.refreshToken
+    // Authentication token expire date (UTC in seconds)
+    authorization.expires
+    
+    // Decoded payload
+    tokenPayload = authenticationClient.decode(authorization.authenticationToken)
+    tokenPayload.apis //the apis
+    tokenPayload.payload //the custom payload
 
-        // List of Claims
-        const decodedToken = new Token(tokenPayload)
-        claims = token.getClaimsByApi('api')
-    })
-}catch(e){
-    //there is a problem with the Sign.
-}
+    // List of Claims
+    const decodedToken = new Token(tokenPayload)
+    claims = token.getClaimsByApi('api')
+}).catch(e => {
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
+})
 ```
 
 ### Sign with a API key and a custom payload
@@ -98,11 +96,11 @@ class AuthenticationHandler implements Handler {
 const authenticationClient = new AuthenticationClient()
 authenticationClient.withHandler(new AuthenticationHandler(`user`, `password`))
 
-try{
-    authenticationClient.sign('apikey').then( authorization => { })
-}catch(e){
-    //there is a problem with the Sign.
-}
+authenticationClient.sign('apikey').then( authorization => { 
+    // authorization code
+}).catch(e => {
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
+})
 ```
 
 ### Verify token
@@ -116,18 +114,19 @@ const authenticationClient = new AuthenticationClient({
 
 try{
     const isValid = authenticationClient.verify(`token`)
-
-    // Decoded payload
-    tokenPayload = authenticationClient.decode(`token`)
-    tokenPayload.apis //the apis
-    tokenPayload.payload //the custom payload
-
-    // List of Claims
-    const decodedToken = new Token(tokenPayload)
-    claims = token.getClaimsByApi('api')
 }catch(e){
-    //the reason
+    // * `TokenExpiredError` Token is expired
+    // * `InvalidToken` Token is invalid with he public key
 }
+
+// Decode payload
+tokenPayload = authenticationClient.decode(`token`)
+tokenPayload.apis //the apis
+tokenPayload.payload //the custom payload
+
+// List of Claims
+const decodedToken = new Token(tokenPayload)
+claims = token.getClaimsByApi('api')
 ```
 
 ##### OR
@@ -135,7 +134,13 @@ try{
 ```js
 const fs = require('fs')
 const { AuthenticationClient } = require(`@mapify/sdk`)
-const isValid = AuthenticationClient.verify(`token`, fs.readFileSync(`${__dirname}/key.pub`, { encoding: 'utf8' }))
+
+try{
+    const isValid = AuthenticationClient.verify(`token`, fs.readFileSync(`${__dirname}/key.pub`, { encoding: 'utf8' }))
+}catch(e){
+    // * `TokenExpiredError` Token is expired
+    // * `InvalidToken` Token is invalid with he public key
+}
 ```
 
 ### Refresh Token
@@ -146,7 +151,7 @@ try{
     const authenticationClient = new AuthenticationClient()
     authenticationClient.refresh(authorization.refreshToken).then( authorization => { })
 }catch(e){
-    //there is a problem with the Sign.
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
 }
 ```
 
