@@ -116,6 +116,15 @@ const authenticationClient = new AuthenticationClient({
 
 try{
     const isValid = authenticationClient.verify(`token`)
+
+    // Decoded payload
+    tokenPayload = authenticationClient.decode(`token`)
+    tokenPayload.apis //the apis
+    tokenPayload.payload //the custom payload
+
+    // List of Claims
+    const decodedToken = new Token(tokenPayload)
+    claims = token.getClaimsByApi('api')
 }catch(e){
     //the reason
 }
