@@ -6,7 +6,7 @@ The Mapify JS SDK library is a wrapper for the Mapify APIs, such as the Authoriz
 
 ## Mapify Platform
 
-[Mapify](https://www.mapify.ai/) is a Location Intelligence Platform to prthisototype and develop large scalable enterprise solutions. It aggregates data from IOT sensing devices, modern and legacy information systems, enriching its value through location intelligence and machine learning layers to assist human decision on every imaginable use case while allowing virtually infinite platform extensibility.
+[Mapify](https://www.mapify.ai/) is a Location Intelligence Platform to prototype and develop large scalable enterprise solutions. It aggregates data from IOT sensing devices, modern and legacy information systems, enriching its value through location intelligence and machine learning layers to assist human decision on every imaginable use case while allowing virtually infinite platform extensibility.
 
 * [Website](https://www.mapify.ai/)
 * [Privacy Policy](https://www.mapify.ai/privacy/)

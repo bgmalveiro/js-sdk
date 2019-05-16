@@ -6,8 +6,9 @@ import { Handler } from './Handler';
 import { HttpRequest } from './adapters/http/HttpRequest';
 import { HttpMethods } from './adapters/http/HttpMethods';
 
-export class InvalidToken extends Error { }
 export class InvalidPublicKey extends Error { }
+export const InvalidToken = jwt.JsonWebTokenError
+export const TokenExpiredError = jwt.TokenExpiredError
 
 const defaultOptions: AuthenticationOptions = {
     baseURI: 'https://authentication.api.mapify.ai'
@@ -21,16 +22,7 @@ export class AuthenticationClient {
         this.options = { ...defaultOptions, ...options }
     }
 
-    public static verify(token: string, key: string | Buffer) {
-        try {
-            return !!jwt.verify(token, key)
-        } catch (err) {
-            if (err instanceof jwt.TokenExpiredError) {
-                throw new jwt.TokenExpiredError(err.message, err.expiredAt)
-            }
-            throw new InvalidToken('Invalid JWT')
-        }
-    }
+    public static verify = (token: string, key: string | Buffer) => !!jwt.verify(token, key)
 
     public withHandler = (handler: Handler) => (this.handlers.push(handler), this)
 
