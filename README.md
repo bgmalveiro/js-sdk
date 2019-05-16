@@ -48,25 +48,29 @@ const authenticationClient = new AuthenticationClient({
 const { AuthenticationClient, Token } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
 
-authenticationClient.sign('apikey').then( authorization => {
-    // Authentication token
-    authorization.authenticationToken
-    // Refresh token
-    authorization.refreshToken
-    // Authentication token expire date (UTC in seconds)
-    authorization.expires
-    
-    // Decoded payload
-    tokenPayload = authenticationClient.decode(authorization.authenticationToken)
-    tokenPayload.apis //the apis
-    tokenPayload.payload //the custom payload
+async function sign(){
+    try{
+        const authorization = await authenticationClient.sign('apikey')
 
-    // List of Claims
-    const decodedToken = new Token(tokenPayload)
-    claims = token.getClaimsByApi('api')
-}).catch(e => {
-    // * `HTTPException` its thrown wherever is a problem with a Sign.
-})
+        // Authentication token
+        authorization.authenticationToken
+        // Refresh token
+        authorization.refreshToken
+        // Authentication token expire date (UTC in seconds)
+        authorization.expires
+        
+        // Decoded payload
+        tokenPayload = authenticationClient.decode(authorization.authenticationToken)
+        tokenPayload.apis //the apis
+        tokenPayload.payload //the custom payload
+
+        // List of Claims
+        const decodedToken = new Token(tokenPayload)
+        claims = token.getClaimsByApi('api')
+    }catch(e){
+        // * `HTTPException` its thrown wherever is a problem with a Sign.
+    }
+}
 ```
 
 ### Sign with a API key and a custom payload
@@ -74,7 +78,17 @@ authenticationClient.sign('apikey').then( authorization => {
 ```js
 const { AuthenticationClient } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
-const token = await authenticationClient.sign('apikey', customPayload)
+
+async function sign(){
+    try{
+        const customPayload = {
+            example: "example"
+        }
+        const token = await authenticationClient.sign('apikey', customPayload)
+    }catch(e){
+        // * `HTTPException` its thrown wherever is a problem with a Sign.
+    }
+}
 ```
 
 ### Sign with a API key and a Handler
@@ -93,14 +107,17 @@ class AuthenticationHandler implements Handler {
     }
 }
 
-const authenticationClient = new AuthenticationClient()
-authenticationClient.withHandler(new AuthenticationHandler(`user`, `password`))
+async function sign(){
+    const authenticationClient = new AuthenticationClient()
+    authenticationClient.withHandler(new AuthenticationHandler(`user`, `password`))
 
-authenticationClient.sign('apikey').then( authorization => { 
-    // authorization code
-}).catch(e => {
-    // * `HTTPException` its thrown wherever is a problem with a Sign.
-})
+    try{
+        const authorization = await authenticationClient.sign('apikey')
+        // authorization code
+    }catch(e){
+        // * `HTTPException` its thrown wherever is a problem with a Sign.
+    }
+}
 ```
 
 ### Verify token
@@ -147,11 +164,14 @@ try{
 
 ```js
 const { AuthenticationClient } = require(`@mapify/sdk`)
-try{
-    const authenticationClient = new AuthenticationClient()
-    authenticationClient.refresh(authorization.refreshToken).then( authorization => { })
-}catch(e){
-    // * `HTTPException` its thrown wherever is a problem with a Sign.
+
+async function refresh(refreshToken){
+    try{
+        const authenticationClient = new AuthenticationClient()
+        const authorization = await authenticationClient.refresh(refreshToken)
+    }catch(e){
+        // * `HTTPException` its thrown wherever is a problem with a Sign.
+    }
 }
 ```
 
