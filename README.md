@@ -6,7 +6,7 @@ The Mapify JS SDK library is a wrapper for the Mapify APIs, such as the Authoriz
 
 ## Mapify Platform
 
-[Mapify](https://www.mapify.ai/) is a Location Intelligence Platform to prthisototype and develop large scalable enterprise solutions. It aggregates data from IOT sensing devices, modern and legacy information systems, enriching its value through location intelligence and machine learning layers to assist human decision on every imaginable use case while allowing virtually infinite platform extensibility.
+[Mapify](https://www.mapify.ai/) is a Location Intelligence Platform to prototype and develop large scalable enterprise solutions. It aggregates data from IOT sensing devices, modern and legacy information systems, enriching its value through location intelligence and machine learning layers to assist human decision on every imaginable use case while allowing virtually infinite platform extensibility.
 
 * [Website](https://www.mapify.ai/)
 * [Privacy Policy](https://www.mapify.ai/privacy/)
@@ -47,27 +47,26 @@ const authenticationClient = new AuthenticationClient({
 ```js
 const { AuthenticationClient, Token } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
-
 try{
-    authenticationClient.sign('apikey').then( authorization => {
-       // Authentication token
-        authorization.authenticationToken
-        // Refresh token
-        authorization.refreshToken
-        // Authentication token expire date (UTC in seconds)
-        authorization.expires
-        
-        // Decoded payload
-        tokenPayload = authenticationClient.decode(authorization.authenticationToken)
-        tokenPayload.apis //the apis
-        tokenPayload.payload //the custom payload
+    const authorization = await authenticationClient.sign('apikey')
 
-        // List of Claims
-        const decodedToken = new Token(tokenPayload)
-        claims = token.getClaimsByApi('api')
-    })
+    // Authentication token
+    authorization.authenticationToken
+    // Refresh token
+    authorization.refreshToken
+    // Authentication token expire date (UTC in seconds)
+    authorization.expires
+    
+    // Decoded payload
+    tokenPayload = authenticationClient.decode(authorization.authenticationToken)
+    tokenPayload.apis //the apis
+    tokenPayload.payload //the custom payload
+
+    // List of Claims
+    const decodedToken = new Token(tokenPayload)
+    claims = token.getClaimsByApi('api')
 }catch(e){
-    //there is a problem with the Sign.
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
 }
 ```
 
@@ -76,7 +75,15 @@ try{
 ```js
 const { AuthenticationClient } = require(`@mapify/sdk`)
 const authenticationClient = new AuthenticationClient()
-const token = await authenticationClient.sign('apikey', customPayload)
+
+try{
+    const customPayload = {
+        example: "example"
+    }
+    const token = await authenticationClient.sign('apikey', customPayload)
+}catch(e){
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
+}
 ```
 
 ### Sign with a API key and a Handler
@@ -99,9 +106,10 @@ const authenticationClient = new AuthenticationClient()
 authenticationClient.withHandler(new AuthenticationHandler(`user`, `password`))
 
 try{
-    authenticationClient.sign('apikey').then( authorization => { })
+    const authorization = await authenticationClient.sign('apikey')
+    // authorization code
 }catch(e){
-    //there is a problem with the Sign.
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
 }
 ```
 
@@ -117,8 +125,18 @@ const authenticationClient = new AuthenticationClient({
 try{
     const isValid = authenticationClient.verify(`token`)
 }catch(e){
-    //the reason
+    // * `TokenExpiredError` Token is expired
+    // * `InvalidToken` Token is invalid with he public key
 }
+
+// Decode payload
+tokenPayload = authenticationClient.decode(`token`)
+tokenPayload.apis //the apis
+tokenPayload.payload //the custom payload
+
+// List of Claims
+const decodedToken = new Token(tokenPayload)
+claims = token.getClaimsByApi('api')
 ```
 
 ##### OR
@@ -126,18 +144,25 @@ try{
 ```js
 const fs = require('fs')
 const { AuthenticationClient } = require(`@mapify/sdk`)
-const isValid = AuthenticationClient.verify(`token`, fs.readFileSync(`${__dirname}/key.pub`, { encoding: 'utf8' }))
+
+try{
+    const isValid = AuthenticationClient.verify(`token`, fs.readFileSync(`${__dirname}/key.pub`, { encoding: 'utf8' }))
+}catch(e){
+    // * `TokenExpiredError` Token is expired
+    // * `InvalidToken` Token is invalid with he public key
+}
 ```
 
 ### Refresh Token
 
 ```js
 const { AuthenticationClient } = require(`@mapify/sdk`)
+
 try{
     const authenticationClient = new AuthenticationClient()
-    authenticationClient.refresh(authorization.refreshToken).then( authorization => { })
+    const authorization = await authenticationClient.refresh(refreshToken)
 }catch(e){
-    //there is a problem with the Sign.
+    // * `HTTPException` its thrown wherever is a problem with a Sign.
 }
 ```
 

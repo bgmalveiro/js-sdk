@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AuthenticationClient } from 'src/AuthenticationClient';
+import { AuthenticationClient, InvalidPublicKey, InvalidToken, TokenExpiredError } from 'src/AuthenticationClient';
 import { Authorization } from 'src/contracts';
 import { RequestMock } from './RequestMock';
 import { Configuration } from './Configuration';
@@ -127,23 +127,23 @@ describe('AuthenticationClient', () => {
 
         it('with no public key', () => {
             const authenticationClient = new AuthenticationClient()
-            expect(() => authenticationClient.verify('token')).toThrowError()
+            expect(() => authenticationClient.verify('token')).toThrowError(InvalidPublicKey)
         })
 
         it('expired jwt', () => {
             (jwt.verify as jest.Mock).mockImplementationOnce(() => { throw new jwt.TokenExpiredError('Expired JWT', new Date()) })
-            expect(() =>  AuthenticationClient.verify('token', Configuration.publicKey)).toThrowError()
+            expect(() =>  AuthenticationClient.verify('token', Configuration.publicKey)).toThrowError(TokenExpiredError)
         })
 
         it('invalid jwt', () => {
-            (jwt.verify as jest.Mock).mockImplementationOnce(() => { throw new Error('Invalid JWT') })
+            (jwt.verify as jest.Mock).mockImplementationOnce(() => { throw new jwt.JsonWebTokenError('Invalid JWT') })
 
             const authenticationClient = new AuthenticationClient({
                 baseURI: Configuration.url,
                 publicKey: Configuration.publicKey
             })
 
-            expect(() => authenticationClient.verify('token')).toThrowError()
+            expect(() => authenticationClient.verify('token')).toThrowError(InvalidToken)
         })
     })
 

@@ -3,6 +3,7 @@
     "description": "Mapify javascript SDK",
     "main": "index.js",
     "types": "index.d.ts",
+    "homepage": "https://mapify.ai/",
     "repository": {
         "type": "git",
         "url": "https://github.com/mapifyplatform/js-sdk"
